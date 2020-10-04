@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Wrap</title>
+    
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .bubble {
+            width: 24px;
+            height: 24px;
+            border:1px outset #eee;
+            margin:5px;
+            border-radius:50%;
+            box-shadow: 1px 2px 3px 0.5px #aaa;
+            background-color: #eee;
+        }
+
+        .bubble:hover:not(.clicked) {
+            background-color: #fbfbfb;
+        }
+
+        .clicked {
+            animation: pop 150ms linear;
+            background-color:#ddd;
+            box-shadow: -1px -2px 3px 0.5px #aaa;
+            border-style:inset;
+        }
+
+        @keyframes pop {
+            0% {
+                box-shadow: 1px 2px 3px 0.5px #aaa;
+                border-style:outset;
+                background-color: #eee;
+                transform: none;
+            }
+
+            5% {
+                transform: scale(0.9);
+            }
+
+            25% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                box-shadow: -1px -2px 3px 0.5px #aaa;
+                border-style:inset;
+                background-color:#ddd;
+            }
+        }
+
+        @keyframes squeeze {
+            0% {
+                margin: 5px;
+            }
+
+            100% {
+                margin: 0 -3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+    </div>
+
+    <script>
+        const bubblewrap_container = document.querySelector(".container")
+
+        let mousepressed = false;
+
+        const popping = () => {
+            const audio = document.createElement("audio")
+            audio.src = "pop.ogg"
+            return audio
+        }
+
+        const bubble = () => {
+            const input = document.createElement("button")
+            input.classList.add("bubble")
+            input.addEventListener("mousedown", (e) => {
+                if (!e.target.classList.contains("clicked")){
+                    mousepressed = true 
+                    input.click()
+                }
+            })
+            //input.addEventListener("mouseup", () => mousepressed = false)
+            input.addEventListener("mouseenter", (e) => {
+                if (mousepressed) { 
+                    e.target.click()
+                }
+            })
+
+            input.addEventListener("click", (e) => {
+                if (!e.target.classList.contains("clicked")) {
+                    e.target.classList.add("clicked")
+                } else {
+
+                }
+            })
+
+            return input;
+        }
+
+        //console.log("yeet")
+        while (bubblewrap_container.offsetHeight < bubblewrap_container.parentElement.offsetHeight) {
+            bubblewrap_container.appendChild(bubble())
+        }
+
+        document.addEventListener("mouseup", () => mousepressed = false)
+
+        const squeeze = () => {
+            const bubbles = document.querySelectorAll(".bubble")
+            bubbles.forEach((element) => {
+                element.animate(
+                [
+                    { margin: '5px' },
+                    { margin: '0 -3px'}
+                ], 1000)
+                element.style.margin = '0 -3px'
+            })
+
+        }
+    </script>
+</body>
+</html>
